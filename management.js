@@ -1,7 +1,7 @@
-var mysql = require("mysql");
-var inquirer = require("inquirer");
+const mysql = require("mysql");
+const inquirer = require("inquirer");
 
-var connection = mysql.createConnection({
+const connection = mysql.createConnection({
   host: "localhost",
 
   port: 3306,
@@ -15,4 +15,28 @@ var connection = mysql.createConnection({
 connection.connect(function (err) {
   if (err) throw err;
   console.log("connected as id " + connection.threadId + "\n");
+  promptUser();
 });
+
+function promptUser() {
+  inquirer
+    .prompt({
+      name: "userChoice",
+      type: "list",
+      message: "What would you like to do?",
+      choices: ["View all Employees"],
+    })
+    .then(function (response) {
+      switch (response.userChoice) {
+        case "View all Employees":
+          //add function to read data
+          readEmployees();
+          break;
+      }
+    });
+  function readEmployees() {
+    connection.query("SELECT * FROM employee", function (err, res) {
+      console.table(res);
+    });
+  }
+}
