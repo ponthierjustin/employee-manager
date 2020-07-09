@@ -5,7 +5,7 @@ USE managementDB;
 
 CREATE TABLE department (
     id INT,
-    name VARCHAR(30),
+    department_name VARCHAR(30),
     PRIMARY KEY (id)
 );
 
@@ -25,6 +25,15 @@ CREATE TABLE employee (
     manager_id INT NULL,
     PRIMARY KEY (id)
 );
+
+INSERT INTO department (id, department_name)
+VALUES (1, "Devlopment");
+
+INSERT INTO employee_role (id, title, salary)
+VALUES (1, "Engineer", 75000);
+
+INSERT INTO products (id, first_name, last_name)
+VALUES (1, "Justin", "Ponthier");
 
 SELECT * FROM department;
 SELECT * FROM employee_role;
