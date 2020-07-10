@@ -5,7 +5,7 @@ USE managementDB;
 
 CREATE TABLE department (
     id INT,
-    department_name VARCHAR(30),
+    name VARCHAR(30),
     PRIMARY KEY (id)
 );
 
@@ -14,7 +14,7 @@ CREATE TABLE employee_role (
     title VARCHAR(30),
     salary DECIMAL,
     department_id INT,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
 );
 
 CREATE TABLE employee (
@@ -26,7 +26,7 @@ CREATE TABLE employee (
     PRIMARY KEY (id)
 );
 
-INSERT INTO department (id, department_name)
+INSERT INTO department (id, name)
 VALUES (1, "Devlopment");
 
 INSERT INTO employee_role (id, title, salary)

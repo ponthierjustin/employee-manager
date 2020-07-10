@@ -24,7 +24,15 @@ function promptUser() {
       name: "userChoice",
       type: "list",
       message: "What would you like to do?",
-      choices: ["View all Employees"],
+      choices: [
+        "View all Employees",
+        "View all Employees by Deprament",
+        "View all employees by Manager",
+        "Add Employee",
+        "Remove Employee",
+        "Update Employee Role",
+        "Update Employee Manager",
+      ],
     })
     .then(function (response) {
       switch (response.userChoice) {
@@ -35,7 +43,11 @@ function promptUser() {
       }
     });
   function readEmployees() {
-    connection.query("SELECT * FROM employee", function (err, res) {
+    let query =`SELECT id, first_name, last_name, title, salary, department
+    FROM employee
+    INNER JOIN employee_role USING (id)
+    INNER JOIN department USING (id);`
+    connection.query(query, function (err, res) {
       console.table(res);
     });
   }
