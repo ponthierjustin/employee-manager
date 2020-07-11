@@ -59,3 +59,6 @@ SELECT One.id , One.first_name, One.last_name, CONCAT (Two.first_name, ' ', Two.
 FROM employee One, employee Two
 WHERE One.manager_id = Two.id
 ORDER BY manager;
+
+SELECT department.id, department.name AS department
+FROM department;

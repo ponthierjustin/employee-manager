@@ -33,7 +33,6 @@ function promptUser() {
         "Add Department",
         "Remove Employee",
         "Update Employee Role",
-        "Update Employee Manager",
         "View All Roles",
         "View All Departments",
         "Exit",
@@ -56,8 +55,17 @@ function promptUser() {
         case "Add Role":
           createRole();
           break;
+        case "Add Department":
+          createDepartment();
+          break;
+        case "Update Employee Role":
+          updateRole();
+          break;
         case "View All Roles":
           readRoles();
+          break;
+        case "View All Departments":
+          readAllDepartments();
           break;
         case "Exit":
           connection.end();
@@ -78,6 +86,14 @@ function promptUser() {
     let query = `SELECT employee_role.id,  employee_role.title, employee_role.salary, department.name AS department
     FROM employee_role
     LEFT JOIN department ON employee_role.department_id = department.id;`;
+    connection.query(query, function (err, res) {
+      console.table(res);
+      connection.end();
+    });
+  }
+  function readAllDepartments() {
+    let query = `SELECT department.id, department.name AS department
+    FROM department;`;
     connection.query(query, function (err, res) {
       console.table(res);
       connection.end();
@@ -153,11 +169,28 @@ function promptUser() {
         {
           name: "department_id",
           type: "input",
-          message: "What is the department id of this role."
-        }
+          message: "What is the department id of this role.",
+        },
       ])
       .then(function (res) {
         connection.query(`INSERT INTO employee_role SET ?`, res, (err) => {
+          if (err) throw err;
+          console.log("successfully added!");
+          promptUser();
+        });
+      });
+  }
+  function createDepartment() {
+    inquirer
+      .prompt([
+        {
+          name: "name",
+          type: "input",
+          message: "What's the name of the new department.",
+        },
+      ])
+      .then(function (res) {
+        connection.query(`INSERT INTO department SET ?`, res, (err) => {
           if (err) throw err;
           console.log("successfully added!");
           promptUser();
