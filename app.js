@@ -31,8 +31,6 @@ function promptUser() {
         "Add Employee",
         "Add Role",
         "Add Department",
-        "Remove Employee",
-        "Update Employee Role",
         "View All Roles",
         "View All Departments",
         "Exit",
@@ -57,9 +55,6 @@ function promptUser() {
           break;
         case "Add Department":
           createDepartment();
-          break;
-        case "Update Employee Role":
-          updateRole();
           break;
         case "View All Roles":
           readRoles();
