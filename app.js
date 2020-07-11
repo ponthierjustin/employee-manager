@@ -27,11 +27,14 @@ function promptUser() {
       choices: [
         "View all Employees",
         "View all Employees by Department",
-        "View all employees by Manager",
+        "View all Employees by Manager",
         "Add Employee",
         "Remove Employee",
         "Update Employee Role",
         "Update Employee Manager",
+        "View All Roles",
+        "View All Departments",
+        "Exit",
       ],
     })
     .then(function (response) {
@@ -39,78 +42,94 @@ function promptUser() {
         case "View all Employees":
           readEmployees();
           break;
-          case "View all Employees by Department":
-          readDepartment();
+        case "View all Employees by Department":
+          readByDepartment();
           break;
-          case "View all Employees by Manager":
+        case "View all Employees by Manager":
           readByManager();
           break;
-          case "Add Employee":
+        case "Add Employee":
           createEmployee();
+          break;
+          case "View All Roles":
+          readRoles();
+          break;
+        case "Exit":
+          connection.end();
           break;
       }
     });
   function readEmployees() {
-    let query =`SELECT employee.id, employee.first_name, employee.last_name, employee_role.title, employee_role.salary, department.name AS department, employee.manager_id
+    let query = `SELECT employee.id, employee.first_name, employee.last_name, employee_role.title, employee_role.salary, department.name AS department
     FROM employee
     LEFT JOIN employee_role ON employee.role_id = employee_role.id 
-    INNER JOIN department ON employee_role.department_id = department.id;`
+    INNER JOIN department ON employee_role.department_id = department.id;`;
     connection.query(query, function (err, res) {
       console.table(res);
       connection.end();
     });
-   }
-   function readDepartment() {
-    let query =`SELECT employee.id, employee.first_name, employee.last_name, employee_role.title, employee_role.salary, department.name AS department, employee.manager_id
+  }
+  function readRoles() {
+    let query = `SELECT employee_role.id,  employee_role.title, employee_role.salary, department.name AS department
+    FROM employee_role
+    LEFT JOIN department ON employee.role_id = department.id;`;
+    connection.query(query, function (err, res) {
+      console.table(res);
+      connection.end();
+    });
+  }
+  function readByDepartment() {
+    let query = `SELECT employee.id, employee.first_name, employee.last_name, employee_role.title, employee_role.salary, department.name AS department, employee.manager_id
     FROM employee
     LEFT JOIN employee_role ON employee.role_id = employee_role.id 
     INNER JOIN department ON employee_role.department_id = department.id
-    ORDER BY department.name;`
+    ORDER BY department.name;`;
     connection.query(query, function (err, res) {
       console.table(res);
       connection.end();
     });
   }
   function readByManager() {
-    let query =`SELECT employee.id, employee.first_name, employee.last_name, employee_role.title, employee_role.salary, department.name AS department, employee.manager_id
-    FROM employee
-    LEFT JOIN employee_role ON employee.role_id = employee_role.id 
-    INNER JOIN department ON employee_role.department_id = department.id;`
+    let query = `SELECT One.id , One.first_name, One.last_name, CONCAT (Two.first_name, ' ', Two.last_name) AS manager
+    FROM employee One, employee Two
+    WHERE One.manager_id = Two.id
+    ORDER BY manager;`;
     connection.query(query, function (err, res) {
       console.table(res);
       connection.end();
     });
   }
 
-   function createEmployee() {
+  function createEmployee() {
     inquirer
-    .prompt([
-      {
-      name: "first_name",
-      type: "input",
-      message: "What is the employee's first name?"
-    },
-    {
-      name: "last_name",
-      type: "input",
-      message: "What is the employee's last name?"
-    },
-    {
-      name: "role_id",
-      type: "input",
-      message: "What the employee's role id?",
-    },
-    {
-      name: "manager_id",
-      type: "input",
-      message: "Who is the employee's manager id?"
-    }])
-    .then(function(res){
-     connection.query(`INSERT INTO employee SET ?`, res, err => {
-       if (err) throw err;
-       console.log("successfully added!");
-       promptUser();
-     })
-    }) 
-  } 
+      .prompt([
+        {
+          name: "first_name",
+          type: "input",
+          message: "What is the employee's first name?",
+        },
+        {
+          name: "last_name",
+          type: "input",
+          message: "What is the employee's last name?",
+        },
+        {
+          name: "role_id",
+          type: "input",
+          message: "What the employee's role id number?",
+        },
+        {
+          name: "manager_id",
+          type: "input",
+          message: "Who is the employee's manager id number?",
+        },
+      ])
+      .then(function (res) {
+        connection.query(`INSERT INTO employee SET ?`, res, (err) => {
+          if (err) throw err;
+          console.log("successfully added!");
+          promptUser();
+        });
+      });
+  }
 }
