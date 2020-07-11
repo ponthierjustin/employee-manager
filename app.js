@@ -79,7 +79,7 @@ function promptUser() {
     INNER JOIN department ON employee_role.department_id = department.id;`;
     connection.query(query, function (err, res) {
       console.table(res);
-      connection.end();
+      promptUser();
     });
   }
   function readRoles() {
@@ -88,7 +88,7 @@ function promptUser() {
     LEFT JOIN department ON employee_role.department_id = department.id;`;
     connection.query(query, function (err, res) {
       console.table(res);
-      connection.end();
+      promptUser();
     });
   }
   function readAllDepartments() {
@@ -96,7 +96,7 @@ function promptUser() {
     FROM department;`;
     connection.query(query, function (err, res) {
       console.table(res);
-      connection.end();
+      promptUser();
     });
   }
   function readByDepartment() {
@@ -107,7 +107,7 @@ function promptUser() {
     ORDER BY department.name;`;
     connection.query(query, function (err, res) {
       console.table(res);
-      connection.end();
+      promptUser();
     });
   }
   function readByManager() {
@@ -117,7 +117,7 @@ function promptUser() {
     ORDER BY manager;`;
     connection.query(query, function (err, res) {
       console.table(res);
-      connection.end();
+      promptUser();
     });
   }
 
