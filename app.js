@@ -29,6 +29,8 @@ function promptUser() {
         "View all Employees by Department",
         "View all Employees by Manager",
         "Add Employee",
+        "Add Role",
+        "Add Department",
         "Remove Employee",
         "Update Employee Role",
         "Update Employee Manager",
@@ -51,7 +53,10 @@ function promptUser() {
         case "Add Employee":
           createEmployee();
           break;
-          case "View All Roles":
+        case "Add Role":
+          createRole();
+          break;
+        case "View All Roles":
           readRoles();
           break;
         case "Exit":
@@ -72,7 +77,7 @@ function promptUser() {
   function readRoles() {
     let query = `SELECT employee_role.id,  employee_role.title, employee_role.salary, department.name AS department
     FROM employee_role
-    LEFT JOIN department ON employee.role_id = department.id;`;
+    LEFT JOIN department ON employee_role.department_id = department.id;`;
     connection.query(query, function (err, res) {
       console.table(res);
       connection.end();
@@ -126,6 +131,33 @@ function promptUser() {
       ])
       .then(function (res) {
         connection.query(`INSERT INTO employee SET ?`, res, (err) => {
+          if (err) throw err;
+          console.log("successfully added!");
+          promptUser();
+        });
+      });
+  }
+  function createRole() {
+    inquirer
+      .prompt([
+        {
+          name: "title",
+          type: "input",
+          message: "What is the name of the new role?",
+        },
+        {
+          name: "salary",
+          type: "input",
+          message: "What is the salary of this role?",
+        },
+        {
+          name: "department_id",
+          type: "input",
+          message: "What is the department id of this role."
+        }
+      ])
+      .then(function (res) {
+        connection.query(`INSERT INTO employee_role SET ?`, res, (err) => {
           if (err) throw err;
           console.log("successfully added!");
           promptUser();
