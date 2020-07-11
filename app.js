@@ -31,9 +31,6 @@ function promptUser() {
         "Add Employee",
         "Add Role",
         "Add Department",
-        "Remove Employee",
-        "Update Employee Role",
-        "Update Employee Manager",
         "View All Roles",
         "View All Departments",
         "Exit",
@@ -56,8 +53,14 @@ function promptUser() {
         case "Add Role":
           createRole();
           break;
+        case "Add Department":
+          createDepartment();
+          break;
         case "View All Roles":
           readRoles();
+          break;
+        case "View All Departments":
+          readAllDepartments();
           break;
         case "Exit":
           connection.end();
@@ -71,7 +74,7 @@ function promptUser() {
     INNER JOIN department ON employee_role.department_id = department.id;`;
     connection.query(query, function (err, res) {
       console.table(res);
-      connection.end();
+      promptUser();
     });
   }
   function readRoles() {
@@ -80,7 +83,15 @@ function promptUser() {
     LEFT JOIN department ON employee_role.department_id = department.id;`;
     connection.query(query, function (err, res) {
       console.table(res);
-      connection.end();
+      promptUser();
+    });
+  }
+  function readAllDepartments() {
+    let query = `SELECT department.id, department.name AS department
+    FROM department;`;
+    connection.query(query, function (err, res) {
+      console.table(res);
+      promptUser();
     });
   }
   function readByDepartment() {
@@ -91,7 +102,7 @@ function promptUser() {
     ORDER BY department.name;`;
     connection.query(query, function (err, res) {
       console.table(res);
-      connection.end();
+      promptUser();
     });
   }
   function readByManager() {
@@ -101,7 +112,7 @@ function promptUser() {
     ORDER BY manager;`;
     connection.query(query, function (err, res) {
       console.table(res);
-      connection.end();
+      promptUser();
     });
   }
 
@@ -153,11 +164,28 @@ function promptUser() {
         {
           name: "department_id",
           type: "input",
-          message: "What is the department id of this role."
-        }
+          message: "What is the department id of this role.",
+        },
       ])
       .then(function (res) {
         connection.query(`INSERT INTO employee_role SET ?`, res, (err) => {
+          if (err) throw err;
+          console.log("successfully added!");
+          promptUser();
+        });
+      });
+  }
+  function createDepartment() {
+    inquirer
+      .prompt([
+        {
+          name: "name",
+          type: "input",
+          message: "What's the name of the new department.",
+        },
+      ])
+      .then(function (res) {
+        connection.query(`INSERT INTO department SET ?`, res, (err) => {
           if (err) throw err;
           console.log("successfully added!");
           promptUser();
